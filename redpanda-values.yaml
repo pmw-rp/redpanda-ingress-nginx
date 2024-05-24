@@ -1,34 +1,18 @@
 logging:
   logLevel: debug
 console:
-  enabled: false
+  enabled: true
 external:
-  enabled: false
   domain: local
-listeners:
-  kafka:
-    external:
-      default:
-        advertisedPorts:
-        - 9094
-        tls:
-          enabled: true
-  schemaRegistry:
-    external:
-      default:
-        tls:
-          enabled: true
-  http:
-    external:
-      default:
-        advertisedPorts:
-        - 8083
-        tls:
-          enabled: true
 tls:
-  enabled: false
+  enabled: true
   certs:
-    default: ~
+    # Internal listeners
+    default:
+      secretRef:
+        name: tls-external
+      caEnabled: true
+    # External listeners
     external:
       secretRef:
         name: tls-external

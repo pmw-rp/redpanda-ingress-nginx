@@ -2,7 +2,4 @@ controller:
   extraArgs:
     default-ssl-certificate: "redpanda/tls-external"
     enable-ssl-passthrough: true
-#tcp:
-#  9094: "redpanda/redpanda:9094:kafka"
-#  9644: "redpanda/redpanda:9644:admin"
-
+  allowSnippetAnnotations: true

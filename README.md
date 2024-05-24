@@ -154,7 +154,7 @@ You will see the following output:
 The first command below installs the community-led Nginx Ingress controller via helm, and the second command waits for the deployment to be ready:
 
 ```
-helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace -f ingress-nginx-values.yaml
+helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace --post-renderer ./kustomize -f ingress-nginx-values.yaml
 kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
 ```
 
@@ -180,56 +180,6 @@ If you are testing locally, then you can add each broker's hostname to your `/et
 172.18.0.10 redpanda-2.local
 ```
 
-Edit the deployment with the following command:
-
-```
-kubectl edit deployment.apps/ingress-nginx-controller -n ingress-nginx
-```
-
-Add the following port definitions to the first (and only) container in the `containers` list:
-
-```
-spec:
-  template:
-    spec:
-      containers:
-      - ports:
-        - containerPort: 8083
-          name: rp-proxy
-          protocol: TCP
-        - containerPort: 8084
-          name: rp-schema
-          protocol: TCP
-        - containerPort: 9094
-          name: rp-kafka
-          protocol: TCP
-```
-
-The deployment will automatically destroy the current pod and bring up a replacement pod with the correct configuration. Now edit the LoadBalancer service with the following command:
-
-```
-kubectl edit service/ingress-nginx-controller -n ingress-nginx
-```
-
-Add the following port definitions:
-
-```
-spec:
-  ports:
-  - name: external-rp-proxy
-    port: 8083
-    protocol: TCP
-    targetPort: rp-proxy
-  - name: external-rp-schema
-    port: 8084
-    protocol: TCP
-    targetPort: rp-schema
-  - name: external-rp-kafka
-    port: 9094
-    protocol: TCP
-    targetPort: rp-kafka
-```
-
 ## Deploy the Ingress service
 
 You can now deploy the Ingress service into the `redpanda` namespace:
@@ -252,12 +202,7 @@ Now you should be able to successfully run the following commands:
 
 ```
 rpk cluster info
-```
-
-`rpk` commands that make use of the admin port (such as `rpk cluster health`) will not work with your external rpk client, as the admin port is only available within the cluster. Run admin-oriented `rpk` commands in the following way:
-
-```
-kubectl exec -it -n redpanda redpanda-0 -c redpanda -- rpk cluster health
+rpk cluster health
 ```
 
 Verify connectivity to the schema endpoint through the Ingress:

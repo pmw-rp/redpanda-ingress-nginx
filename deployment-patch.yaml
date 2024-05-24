@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  template:
+    spec:
+      containers:
+        - name: controller
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: webhook
+              containerPort: 8443
+              protocol: TCP
+            - containerPort: 8083
+              name: rp-proxy
+              protocol: TCP
+            - containerPort: 8084
+              name: rp-schema
+              protocol: TCP
+            - containerPort: 9094
+              name: rp-kafka
+              protocol: TCP
+            - containerPort: 9644
+              name: rp-admin
+              protocol: TCP

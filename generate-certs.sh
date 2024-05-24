@@ -81,6 +81,7 @@ DNS.3 = console
 DNS.4 = connect
 DNS.5 = "*.local"
 DNS.6 = "*.redpanda.redpanda.svc.cluster.local"
+DNS.7 = "redpanda.redpanda.svc.cluster.local"
 IP.1 = 127.0.0.1
 EOF
 

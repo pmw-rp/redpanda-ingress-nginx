@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+      appProtocol: http
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+      appProtocol: https
+    - name: external-rp-proxy
+      port: 8083
+      protocol: TCP
+      targetPort: rp-proxy
+    - name: external-rp-schema
+      port: 8084
+      protocol: TCP
+      targetPort: rp-schema
+    - name: external-rp-kafka
+      port: 9094
+      protocol: TCP
+      targetPort: rp-kafka
+    - name: external-rp-admin
+      port: 9644
+      protocol: TCP
+      targetPort: rp-admin
